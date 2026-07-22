@@ -1,0 +1,31 @@
+
+=== TASK 1: Naive vs PagedAllocator ===
+
+Head-to-head comparison (same seed and same workload)
+Allocator | Peak blocks | Rejected | Internal frag. | External frag.
+----------+-------------+----------+----------------+---------------
+Naive     | 255         | 105      | 69.59%         | 24.23%        
+Paged     | 251         | 0        | 11.94%         | 0.00%         
+
+Correctness harness
+Caught DoubleFreeError for request 9001
+Caught UseAfterFreeError for request 9002
+Caught BoundaryMissError for request 9003
+
+10,000 requests x 5 seeds for each required block size
+block_size= 4 requests= 50000 completed= 50000 rejected=   0 assertion_failures=0
+block_size= 8 requests= 50000 completed= 50000 rejected=   0 assertion_failures=0
+block_size=16 requests= 50000 completed= 50000 rejected=   0 assertion_failures=0
+block_size=32 requests= 50000 completed= 49816 rejected= 184 assertion_failures=0
+
+=== TASK 2: Preemption and Multi-Tenant Scheduling ===
+Preemption: completed=500/500, oversubscription=73.52x, recomputations=8156, swaps=1585, hash_mismatches=0, orphaned_blocks=0
+SLA scheduler: requests=500, deadline_misses=0, budget_terminations=369, normal_completions=131, orphaned_blocks=0
+Deadlock cycle detected: B -> A
+Evicted request: A
+Recovered in same step: True
+
+=== TASK 3: Bonus Features ===
+Copy-on-Write: N=[1, 2, 4, 8], isolation_failures=0, leaked_blocks=0
+Prefix cache: shared_prefix=20 tokens, second_request_new_allocations=0, success=True
+Distributed page table: migrations=1, node_failure_step=500, affected_requests=2, completed=8, hung=0
