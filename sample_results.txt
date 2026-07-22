@@ -27,5 +27,3 @@ Recovered in same step: True
 
 === TASK 3: Bonus Features ===
 Copy-on-Write: N=[1, 2, 4, 8], isolation_failures=0, leaked_blocks=0
-Prefix cache: shared_prefix=20 tokens, second_request_new_allocations=0, success=True
-Distributed page table: migrations=1, node_failure_step=500, affected_requests=2, completed=8, hung=0

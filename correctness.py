@@ -13,7 +13,7 @@ class CorrectnessHarness:
     """Prove that blocks are isolated and controlled errors are detected."""
 
     def check_active_requests(self, active: Dict[int, Request]) -> None:
-        """Assert that active requests own pairwise-disjoint physical blocks."""
+        """Ensures two active requests never own the same physical block."""
         seen: set[int] = set()
         for request in active.values():
             blocks = set(request.page_table.values())

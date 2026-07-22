@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import argparse
 
-from bonus import run_cow_demo, run_distributed_demo, run_prefix_demo
+from bonus import run_cow_demo
 from correctness import CorrectnessHarness
 from deadlock import run_deadlock_demo
 from naive_allocator import NaiveContiguousAllocator
@@ -116,31 +116,13 @@ def run_task_2() -> None:
 
 
 def run_task_3() -> None:
-    """Run Copy-on-Write, prefix-cache, and distributed-memory bonuses."""
-    print("\n=== TASK 3: Bonus Features ===")
+    """Run the Copy-on-Write bonus demonstration."""
+    print("\n=== TASK 3: Copy-on-Write Bonus ===")
     cow = run_cow_demo()
     print(
         "Copy-on-Write: "
         f"N={cow.tested_completion_counts}, "
         f"isolation_failures={cow.isolation_failures}, leaked_blocks={cow.leaked_blocks}"
-    )
-
-    prefix = run_prefix_demo()
-    print(
-        "Prefix cache: "
-        f"shared_prefix={prefix.shared_prefix_tokens} tokens, "
-        f"second_request_new_allocations={prefix.second_request_new_allocations}, "
-        f"success={prefix.success}"
-    )
-
-    distributed = run_distributed_demo()
-    print(
-        "Distributed page table: "
-        f"migrations={distributed.migrations}, "
-        f"node_failure_step={distributed.node_failure_step}, "
-        f"affected_requests={distributed.affected_requests}, "
-        f"completed={distributed.completed_requests}, "
-        f"hung={distributed.hung_requests}"
     )
 
 

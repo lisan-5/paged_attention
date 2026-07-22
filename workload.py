@@ -18,12 +18,7 @@ def generate_workload(
     min_length: int = 10,
     max_length: int = 512,
 ) -> List[Request]:
-    """Create a deterministic Poisson-arrival/exponential-service workload.
 
-    Exponential inter-arrival times produce a Poisson arrival process. Service
-    time is also exponentially distributed and is used as the actual token
-    length, capped by the request's uniformly sampled maximum length.
-    """
     rng = random.Random(seed)
     requests: List[Request] = []
     arrival_clock = 0.0

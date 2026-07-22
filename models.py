@@ -1,4 +1,3 @@
-"""Shared data models passed between allocators, schedulers, and reports."""
 
 from __future__ import annotations
 

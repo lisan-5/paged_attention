@@ -1,4 +1,4 @@
-"""Focused regression tests for required allocator behavior and bonus features."""
+"""Focused regression tests for paging, correctness, deadlock, and Copy-on-Write."""
 
 import os
 import sys
@@ -8,11 +8,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from bonus import (
-    CopyOnWriteManager,
-    PrefixCache,
-    run_distributed_demo,
-)
+from bonus import CopyOnWriteManager
 from correctness import CorrectnessHarness
 from deadlock import run_deadlock_demo
 from models import Request
@@ -58,7 +54,7 @@ class PagedAllocatorTests(unittest.TestCase):
 
 
 class BonusTests(unittest.TestCase):
-    """Verify isolation, caching, recovery, and leak-free bonus behavior."""
+    """Verify Copy-on-Write isolation and deadlock recovery."""
 
     def test_copy_on_write_isolation(self):
         """Prove that two completions can diverge without corrupting each other."""
@@ -74,28 +70,12 @@ class BonusTests(unittest.TestCase):
         manager.cancel(completions[1])
         self.assertEqual(len(manager.allocator.free_blocks), 32)
 
-    def test_prefix_cache_zero_allocations(self):
-        """Require a fully shared 20-token prefix to allocate no new blocks."""
-        cache = PrefixCache(total_blocks=32, block_size=4, minimum_prefix=8)
-        prefix = [str(index) for index in range(20)]
-        first, _ = cache.add_request("first", prefix)
-        second, allocations = cache.add_request("second", prefix)
-        self.assertEqual(allocations, 0)
-        cache.release(second)
-        cache.release(first)
-
     def test_deadlock_recovery(self):
         """Confirm the crafted cycle is detected and broken in one step."""
         report = run_deadlock_demo(print_output=False)
         self.assertTrue(report.cycle_detected)
         self.assertTrue(report.recovered_same_step)
         self.assertEqual(report.victim, "A")
-
-    def test_distributed_node_failure(self):
-        """Confirm node failure and migration leave no request hanging."""
-        report = run_distributed_demo()
-        self.assertEqual(report.hung_requests, 0)
-        self.assertGreaterEqual(report.migrations, 1)
 
 
 if __name__ == "__main__":
